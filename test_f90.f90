@@ -4,7 +4,7 @@ program test_f90
   type(rng_t) :: rng
   integer     :: i
 
-  rng%s = (/-1337, 9812374/)
+  call rng%seed((/-1337_i8, 9812374_i8/))
 
   do i = 1, 10
      print *, rng%next()

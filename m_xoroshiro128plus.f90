@@ -1,5 +1,5 @@
 ! Written in 2016 by David Blackman and Sebastiano Vigna (vigna@acm.org)
-! Translated to Fortran by Jannis Teunissen
+! Translated to Fortran 2008 by Jannis Teunissen
 
 ! To the extent possible under law, the author has dedicated all copyright
 ! and related and neighboring rights to this software to the public domain
@@ -30,6 +30,7 @@ module m_xoroshiro128plus
   implicit none
   public
 
+  ! This should define a 64 bit integer type
   integer, parameter :: i8 = selected_int_kind(18)
 
   ! A type to store the RNG state, with methods
@@ -37,11 +38,13 @@ module m_xoroshiro128plus
      integer(i8) :: s(2)
    contains
      procedure, non_overridable :: next
+     procedure, non_overridable :: seed
      procedure, non_overridable :: jump
   end type rng_t
 
 contains
 
+  ! For internal use
   pure function rotl(x, k) result(res)
     integer(i8), intent(in) :: x
     integer, intent(in)     :: k
@@ -50,6 +53,7 @@ contains
     res = ior(ishft(x, k), ishft(x, k - 64))
   end function rotl
 
+  ! Get the next value (returned as 64 bit signed integer)
   function next(self) result(res)
     class(rng_t), intent(inout) :: self
     integer(i8)                 :: res
@@ -61,6 +65,14 @@ contains
     self%s(1) = ieor(ieor(rotl(t(1), 55), t(2)), ishft(t(2), 14))
     self%s(2) = rotl(t(2), 36)
   end function next
+
+  ! Set a seed for the RNG
+  subroutine seed(self, the_seed)
+    class(rng_t), intent(inout) :: self
+    integer(i8), intent(in)     :: the_seed(2)
+
+    self%s = the_seed
+  end subroutine seed
 
   ! This is the jump function for the generator. It is equivalent
   ! to 2^64 calls to next(); it can be used to generate 2^64
@@ -86,4 +98,5 @@ contains
 
     self%s = t
   end subroutine jump
+
 end module m_xoroshiro128plus
