@@ -2,17 +2,15 @@ program test_f90
   use m_xoroshiro128plus
 
   type(rng_t) :: rng
-  integer     :: i
+  integer     :: i, dummy
 
   call rng%seed((/-1337_i8, 9812374_i8/))
 
-  do i = 1, 10
-     print *, rng%next()
+  do i = 1, 1000*1000*1000
+     dummy = rng%next()
   end do
 
   call rng%jump()
 
-  do i = 1, 10
-     print *, rng%next()
-  end do
+  print *, rng%next()
 end program test_f90

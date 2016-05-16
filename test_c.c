@@ -6,13 +6,11 @@ int main(void) {
   s[0] = -1337;
   s[1] = 9812374;
 
-  for(int i = 0; i < 10; i++) {
-    printf("%ld\n", next());
+  for(int i = 0; i < 1000*1000*1000; i++) {
+    next();
   }
 
   jump();
 
-  for(int i = 0; i < 10; i++) {
-    printf("%ld\n", next());
-  }
+  printf("%ld\n", next());
 }
