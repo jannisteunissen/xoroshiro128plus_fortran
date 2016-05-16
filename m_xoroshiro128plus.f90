@@ -50,7 +50,7 @@ contains
     integer, intent(in)     :: k
     integer(i8)             :: res
 
-    res = ior(ishft(x, k), ishft(x, k - 64))
+    res = ior(shiftl(x, k), shiftr(x, 64 - k))
   end function rotl
 
   ! Get the next value (returned as 64 bit signed integer)
@@ -62,7 +62,7 @@ contains
     t         = self%s
     res       = t(1) + t(2)
     t(2)      = ieor(t(1), t(2))
-    self%s(1) = ieor(ieor(rotl(t(1), 55), t(2)), ishft(t(2), 14))
+    self%s(1) = ieor(ieor(rotl(t(1), 55), t(2)), shiftl(t(2), 14))
     self%s(2) = rotl(t(2), 36)
   end function next
 
@@ -89,7 +89,7 @@ contains
     t = 0
     do i = 1, 2
        do b = 0, 63
-          if (iand(jmp_c(i), ishft(1_i8, b)) /= 0) then
+          if (iand(jmp_c(i), shiftl(1_i8, b)) /= 0) then
              t = ieor(t, self%s)
           end if
           dummy = self%next()
