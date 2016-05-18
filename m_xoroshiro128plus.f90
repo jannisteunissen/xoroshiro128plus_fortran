@@ -28,19 +28,23 @@
 
 module m_xoroshiro128plus
   implicit none
-  public
+  private
 
-  ! This should define a 64 bit integer type
+  ! This defines a 64 bit integer type
   integer, parameter :: i8 = selected_int_kind(18)
 
-  ! A type to store the RNG state, with methods
+  ! A type/class to store the RNG state
   type rng_t
      integer(i8) :: s(2)
-   contains
-     procedure, non_overridable :: next
-     procedure, non_overridable :: seed
-     procedure, non_overridable :: jump
+   contains                             ! Methods:
+     procedure, non_overridable :: next ! Get next random number
+     procedure, non_overridable :: seed ! Seed the generator
+     procedure, non_overridable :: jump ! Jump function (see below)
   end type rng_t
+
+  ! List of public types
+  public :: i8
+  public :: rng_t
 
 contains
 
