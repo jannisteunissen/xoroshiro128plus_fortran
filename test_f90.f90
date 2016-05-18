@@ -2,7 +2,8 @@ program test_f90
   use m_xoroshiro128plus
 
   type(rng_t) :: rng
-  integer     :: i, dummy
+  integer     :: i
+  integer(i8) :: dummy
 
   call rng%seed((/-1337_i8, 9812374_i8/))
 
