@@ -22,5 +22,6 @@ Generating 1 billion random numbers, using `gcc 5.3.1` and `-O3` on an i5 6600:
 
 ## Notes
 
-Because Fortran does not have unsigned integers, the constants have been
-adjusted to their signed-integer equivalents.
+* You have to seed the random number generator before you use it.
+* Because Fortran does not have unsigned integers, the constants have been
+  adjusted to their signed-integer equivalents.
