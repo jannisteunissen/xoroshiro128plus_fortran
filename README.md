@@ -13,6 +13,18 @@ The test can then be compiled:
 Using `gcc 5.3.1`, `-O3` and `-flto` are required to *inline* the code, to get
 maximum performance.
 
+## Usage example
+
+    use m_xoroshiro128plus
+
+    type(rng_t) :: rng
+
+    ! Seed the random number generator
+    call rng%seed((/1337_i8, 31337_i8/))
+
+    print *, rng%next() ! A (signed) random 64-bit integer
+    print *, rng%U01()  ! A double precision [0,1) float
+
 ## Performance
 
 Generating 1 billion random numbers, using `gcc 5.3.1` and `-O3` on an i5 6600:
