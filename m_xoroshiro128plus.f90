@@ -26,6 +26,16 @@
 ! a 64-bit seed, we suggest to seed a splitmix64 generator and use its
 ! output to fill s.
 
+! Usage example:
+!
+! use m_xoroshiro128plus
+!
+! type(rng_t) :: rng
+! call rng%seed((/1337_i8, 31337_i8/))
+!
+! print *, rng%next()
+! print *, rng%U01()
+
 module m_xoroshiro128plus
   implicit none
   private
@@ -33,17 +43,22 @@ module m_xoroshiro128plus
   ! This defines a 64 bit integer type
   integer, parameter :: i8 = selected_int_kind(18)
 
+  ! This defines a 64 bit floating point type (Double Precision)
+  integer, parameter :: dp = kind(0.0d0)
+
   ! A type/class to store the RNG state
   type rng_t
-     integer(i8) :: s(2)
+     ! The default seed (arbitrarily chosen)
+     integer(i8)                :: s(2) = (/123456789_i8, 987654321_i8/)
    contains                             ! Methods:
      procedure, non_overridable :: next ! Get next random number
+     procedure, non_overridable :: U01  ! Get next random float [0,1)
      procedure, non_overridable :: seed ! Seed the generator
      procedure, non_overridable :: jump ! Jump function (see below)
   end type rng_t
 
   ! List of public types
-  public :: i8
+  public :: i8, dp
   public :: rng_t
 
 contains
@@ -69,6 +84,17 @@ contains
     self%s(1) = ieor(ieor(rotl(t(1), 55), t(2)), shiftl(t(2), 14))
     self%s(2) = rotl(t(2), 36)
   end function next
+
+  ! Get a uniform [0,1) random real (double precision)
+  function U01(self) result(res)
+    class(rng_t), intent(inout) :: self
+    real(dp)                    :: res
+    integer(i8)                 :: x
+
+    x   = self%next()
+    x   = ior(shiftl(1023_i8, 52), shiftr(x, 12))
+    res = transfer(x, res) - 1.0_dp
+  end function U01
 
   ! Set a seed for the RNG
   subroutine seed(self, the_seed)
